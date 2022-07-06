@@ -12,7 +12,7 @@ pygame.init()
 pygame.display.set_caption('cloth?')
 screen = pygame.display.set_mode((1000,1000),0,32)
 
-points_data = cloth.load_model('test_mesh_2.mesh')
+points_data = cloth.load_model('test_mesh_3.mesh')
 
 test_cloth = cloth.ClothObj(points_data)
 
@@ -26,7 +26,6 @@ def fps_counter(clock, window):
 
 render_mode = 0
 mouse_pressed = 0
-
 
 while True:
 
@@ -71,8 +70,7 @@ while True:
             if event.button == 1:
                 mouse_pressed = 0
 
-
     pygame.display.update()
-    mainClock.tick(60)
+    delta_time = mainClock.tick(60)
 
 

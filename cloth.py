@@ -107,11 +107,11 @@ class ClothObj():
             dy = self.points[connection[1]][1] - \
                 self.points[connection[0]][1]
             if connection[0] not in self.grounded_point:
-                self.points[connection[0]][0] -= dx * ratio * 0.85
-                self.points[connection[0]][1] -= dy * ratio * 0.85
+                self.points[connection[0]][0] -= dx * ratio 
+                self.points[connection[0]][1] -= dy * ratio 
             if connection[1] not in self.grounded_point:
-                self.points[connection[1]][0] += dx * ratio * 0.85
-                self.points[connection[1]][1] += dy * ratio * 0.85
+                self.points[connection[1]][0] += dx * ratio 
+                self.points[connection[1]][1] += dy * ratio 
 
     def cut(self, position: list):
         threshold = 1
