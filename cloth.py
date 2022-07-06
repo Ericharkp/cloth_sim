@@ -1,7 +1,9 @@
+import time
 import pygame
 import math
 import json
 import os
+from perlin_noise import PerlinNoise
 
 
 def load_model(path):
@@ -37,12 +39,12 @@ def load_rags(path):
 class ClothObj():
     points: list[list]
     """
-    the points are 2d, first dimension contain current position and the next contain previous position
+    the points are 2d, first two elements contain current position and the next two contain previous position
     """
     sticks: list[list]
     """
     The connection between the points represented by its index,
-    first two elements is the index of the two points and the third represented the supposed distance between the two points"""
+    first two elements are the index of the two points and the third represented the supposed distance between the two points"""
 
     def __init__(self, rag) -> None:
         self.points = [p + p for p in rag['points']]
@@ -55,6 +57,8 @@ class ClothObj():
         for i, connection in enumerate(rag['connections']):
             self.sticks[i] = ([connection[0], connection[1], get_dis(
                 self.points[connection[0]][:2], self.points[connection[1]][:2])])
+
+        self.noise = PerlinNoise(2)
 
             # self.sticks.append([connection[0], connection[1], get_dis(
             #     self.points[connection[0]][:2], self.points[connection[1]][:2])])
@@ -76,17 +80,19 @@ class ClothObj():
             self.points[i][3] = self.points[i][1]
 
     def update_pos(self):
-
+        noise = self.noise.noise(time.time())/100
         for i, point in enumerate(self.points):
             if i not in self.grounded_point:
                 dx = (point[0] - point[2])
                 dy = (point[1] - point[3])
+                
 
                 point[2] = point[0]
                 point[3] = point[1]
-                point[0] += dx
-                point[1] += dy
-                point[1] += 0.01
+                point[0] += dx 
+                point[1] += dy 
+                point[1] += 0.01 
+                point[0] += noise
 
         self.__apply_constrain()
         # self.__apply_constrain()
@@ -97,6 +103,7 @@ class ClothObj():
             connection = self.sticks[i]
             dis = get_dis(self.points[connection[0]][:2],
                           self.points[connection[1]][:2])
+
             if dis > (connection[2] * 4):
                 del self.sticks[i]
 
@@ -107,11 +114,11 @@ class ClothObj():
             dy = self.points[connection[1]][1] - \
                 self.points[connection[0]][1]
             if connection[0] not in self.grounded_point:
-                self.points[connection[0]][0] -= dx * ratio 
-                self.points[connection[0]][1] -= dy * ratio 
+                self.points[connection[0]][0] -= dx * ratio
+                self.points[connection[0]][1] -= dy * ratio
             if connection[1] not in self.grounded_point:
-                self.points[connection[1]][0] += dx * ratio 
-                self.points[connection[1]][1] += dy * ratio 
+                self.points[connection[1]][0] += dx * ratio
+                self.points[connection[1]][1] += dy * ratio
 
     def cut(self, position: list):
         threshold = 1

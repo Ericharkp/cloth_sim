@@ -10,7 +10,7 @@ from pygame.locals import *
 
 pygame.init()
 pygame.display.set_caption('cloth?')
-screen = pygame.display.set_mode((1000,1000),0,32)
+screen = pygame.display.set_mode((500,500),0,32)
 
 points_data = cloth.load_model('test_mesh_3.mesh')
 
